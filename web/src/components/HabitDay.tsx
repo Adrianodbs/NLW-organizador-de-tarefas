@@ -5,23 +5,31 @@ import clsx from 'clsx'
 import { Check } from 'phosphor-react'
 import dayjs from 'dayjs'
 import HabitsList from './HabitsList'
+import { useState } from 'react'
 
 interface HabitProps {
   date: Date
-  completed?: number
+  defaultCompleted?: number
   amount?: number
 }
 
 export default function HabitDay({
-  completed = 0,
+  defaultCompleted = 0,
   amount = 0,
   date
 }: HabitProps) {
+  const [completed, setCompleted] = useState(defaultCompleted)
+
   const completedPercentage =
     amount > 0 ? Math.round((completed / amount) * 100) : 0
 
   const dayAndMonth = dayjs(date).format('DD/MM')
   const dayOfWeek = dayjs(date).format('dddd')
+
+  function handleCompletedChanged(completed: number) {
+    setCompleted(completed)
+  }
+
   return (
     <Popover.Root>
       <Popover.Trigger
@@ -48,7 +56,7 @@ export default function HabitDay({
 
           <ProgressBar progress={completedPercentage} />
 
-          <HabitsList date={date} />
+          <HabitsList date={date} onCompletedChanged={handleCompletedChanged} />
 
           <Popover.Arrow height={8} width={16} className="fill-zinc-900" />
         </Popover.Content>
